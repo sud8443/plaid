@@ -20,7 +20,7 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.api.any
 import io.plaidapp.core.designernews.data.api.errorResponseBody
-import io.plaidapp.core.designernews.data.api.provideFakeCoroutinesContextProvider
+import io.plaidapp.core.provideFakeCoroutinesContextProvider
 import kotlinx.coroutines.experimental.CompletableDeferred
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -39,7 +39,7 @@ class DesignerNewsVotesRepositoryTest {
     private val service = Mockito.mock(DesignerNewsService::class.java)
     private val votesRepository = DesignerNewsVotesRepository(
             service,
-            provideFakeCoroutinesContextProvider()
+        provideFakeCoroutinesContextProvider()
     )
 
     @Test

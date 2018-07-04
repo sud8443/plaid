@@ -22,7 +22,7 @@ import io.plaidapp.core.designernews.data.api.errorResponseBody
 import io.plaidapp.core.designernews.data.api.model.Comment
 import io.plaidapp.core.designernews.data.api.parentCommentWithReplies
 import io.plaidapp.core.designernews.data.api.parentCommentWithoutReplies
-import io.plaidapp.core.designernews.data.api.provideFakeCoroutinesContextProvider
+import io.plaidapp.core.provideFakeCoroutinesContextProvider
 import io.plaidapp.core.designernews.data.api.replies
 import io.plaidapp.core.designernews.data.api.reply1
 import kotlinx.coroutines.experimental.CompletableDeferred
@@ -42,7 +42,7 @@ class DesignerNewsCommentsRepositoryTest {
     private val dataSource = DesignerNewsCommentsRemoteDataSource(service)
     private val repository = DesignerNewsCommentsRepository(
             dataSource,
-            provideFakeCoroutinesContextProvider()
+        provideFakeCoroutinesContextProvider()
     )
 
     @Test
@@ -53,7 +53,7 @@ class DesignerNewsCommentsRepositoryTest {
         var result: Result<List<Comment>>? = null
 
         // When getting the replies
-        repository.getComments(listOf(11L)) { it -> result = it }
+        repository.getComments(listOf(11L)) { result = it }
 
         // Then the correct list of comments was requested from the API
         Mockito.verify(service).getComments("11")
@@ -69,7 +69,7 @@ class DesignerNewsCommentsRepositoryTest {
         var result: Result<List<Comment>>? = null
 
         // When getting the comments
-        repository.getComments(listOf(11L)) { it -> result = it }
+        repository.getComments(listOf(11L)) { result = it }
 
         // Then the result is not successful
         assertNotNull(result)
@@ -90,7 +90,7 @@ class DesignerNewsCommentsRepositoryTest {
         var result: Result<List<Comment>>? = null
 
         // When getting the comments from the repository
-        repository.getComments(listOf(1L)) { it -> result = it }
+        repository.getComments(listOf(1L)) { result = it }
 
         // Then  API requests were triggered
         Mockito.verify(service).getComments("1")
@@ -112,7 +112,7 @@ class DesignerNewsCommentsRepositoryTest {
         var result: Result<List<Comment>>? = null
 
         // When getting the comments from the repository
-        repository.getComments(listOf(1L)) { it -> result = it }
+        repository.getComments(listOf(1L)) { result = it }
 
         // Then  API requests were triggered
         Mockito.verify(service).getComments("1")
