@@ -83,6 +83,7 @@ class AboutActivity : AppCompatActivity() {
                         .setToolbarColor(ContextCompat.getColor(this,
                                 appR.color.primary))
                         .addDefaultShareMenuItem()
-                        .build(), Uri.parse(link))
+                        .build(),
+                Uri.parse(link))
     }
 }

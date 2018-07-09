@@ -40,10 +40,10 @@ class CutoutTextView(context: Context, attrs: AttributeSet) : View(context, attr
 
     private val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
     private val maxTextSize: Float
+    private val text: String
 
     private var cutout: Bitmap? = null
     private var foregroundColor = Color.MAGENTA
-    private var text: String? = null
     private var textY = 0f
     private var textX = 0f
 
@@ -64,8 +64,10 @@ class CutoutTextView(context: Context, attrs: AttributeSet) : View(context, attr
             foregroundColor = a.getColor(R.styleable.CutoutTextView_foregroundColor,
                     foregroundColor)
         }
-        if (a.hasValue(R.styleable.CutoutTextView_android_text)) {
-            text = a.getString(R.styleable.CutoutTextView_android_text)
+        text = if (a.hasValue(R.styleable.CutoutTextView_android_text)) {
+            a.getString(R.styleable.CutoutTextView_android_text)
+        } else {
+            ""
         }
         maxTextSize = context.resources.getDimensionPixelSize(coreR.dimen.display_4_text_size).toFloat()
         a.recycle()
@@ -88,7 +90,7 @@ class CutoutTextView(context: Context, attrs: AttributeSet) : View(context, attr
         // measuring text is fun :] see: https://chris.banes.me/2014/03/27/measuring-text/
         textX = (width - textPaint.measureText(text)) / 2
         val textBounds = Rect()
-        textPaint.getTextBounds(text, 0, text!!.length, textBounds)
+        textPaint.getTextBounds(text, 0, text.length, textBounds)
         val textHeight = textBounds.height().toFloat()
         textY = (height + textHeight) / 2
     }
@@ -109,12 +111,12 @@ class CutoutTextView(context: Context, attrs: AttributeSet) : View(context, attr
 
         Canvas(cutout).apply {
             drawColor(foregroundColor)
-            drawText(text!!, textX, textY, textPaint)
+            drawText(text, textX, textY, textPaint)
         }
     }
 
     override fun onDraw(canvas: Canvas) {
-        canvas.drawBitmap(cutout!!, 0f, 0f, null)
+        canvas.drawBitmap(cutout, 0f, 0f, null)
     }
 
     override fun hasOverlappingRendering() = true
