@@ -16,6 +16,7 @@
 
 package io.plaidapp.ui.about
 
+import android.content.Context
 import android.support.v4.view.PagerAdapter
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -49,53 +50,54 @@ internal class AboutPagerAdapter(private val uiModel: AboutUiModel) : PagerAdapt
     override fun isViewFromObject(view: View, obj: Any) = view === obj
 
     private fun getPage(position: Int, parent: ViewGroup): View {
-        if (!::layoutInflater.isInitialized) {
-            layoutInflater = LayoutInflater.from(parent.context)
-        }
         return when (position) {
-            0 -> {
-                if (!::aboutPlaid.isInitialized) {
-                    buildAppAboutPage(parent)
-                }
-                aboutPlaid
-            }
-            1 -> {
-                if (!::aboutIcon.isInitialized) {
-                    buildIconAboutPage(parent)
-                }
-                aboutIcon
-            }
-            2 -> {
-                if (!::aboutLibs.isInitialized) {
-                    buildLibsAboutPage(parent)
-                }
-                aboutLibs
-            }
+            0 -> getAboutAppPage(parent)
+            1 -> getAboutIconPage(parent)
+            2 -> getAboutLibsPage(parent)
             else -> throw InvalidParameterException()
         }
     }
 
-    private fun buildLibsAboutPage(parent: ViewGroup) {
-        aboutLibs = layoutInflater.inflate(R.layout.about_libs, parent, false).apply {
-            findViewById<RecyclerView>(R.id.libs_list).apply {
-                adapter = LibraryAdapter(uiModel.librariesUiModel)
+    private fun getAboutIconPage(parent: ViewGroup): View {
+        assureLayoutInflaterInitialized(parent.context)
+        if (!::aboutIcon.isInitialized) {
+            aboutIcon = layoutInflater.inflate(R.layout.about_icon, parent, false).apply {
+                findViewById<TextView>(R.id.icon_description).apply {
+                    HtmlUtils.setTextWithNiceLinks(this, uiModel.iconAboutText)
+                }
             }
         }
+        return aboutIcon
     }
 
-    private fun buildIconAboutPage(parent: ViewGroup) {
-        aboutIcon = layoutInflater.inflate(R.layout.about_icon, parent, false).apply {
-            findViewById<TextView>(R.id.icon_description).apply {
-                HtmlUtils.setTextWithNiceLinks(this, uiModel.iconAboutText)
+    private fun getAboutAppPage(parent: ViewGroup): View {
+        assureLayoutInflaterInitialized(parent.context)
+        if (!::aboutPlaid.isInitialized) {
+            aboutPlaid = layoutInflater.inflate(R.layout.about_plaid, parent, false)
+                    .apply {
+                        findViewById<TextView>(R.id.about_description).apply {
+                            HtmlUtils.setTextWithNiceLinks(this, uiModel.appAboutText)
+                        }
+                    }
+        }
+        return aboutPlaid
+    }
+
+    private fun getAboutLibsPage(parent: ViewGroup): View {
+        assureLayoutInflaterInitialized(parent.context)
+        if (!::aboutLibs.isInitialized) {
+            aboutLibs = layoutInflater.inflate(R.layout.about_libs, parent, false).apply {
+                findViewById<RecyclerView>(R.id.libs_list).apply {
+                    adapter = LibraryAdapter(uiModel.librariesUiModel)
+                }
             }
         }
+        return aboutLibs
     }
 
-    private fun buildAppAboutPage(parent: ViewGroup) {
-        aboutPlaid = layoutInflater.inflate(R.layout.about_plaid, parent, false).apply{
-            findViewById<TextView>(R.id.about_description).apply {
-                HtmlUtils.setTextWithNiceLinks(this, uiModel.appAboutText)
-            }
+    private fun assureLayoutInflaterInitialized(context: Context) {
+        if (!::layoutInflater.isInitialized) {
+            layoutInflater = LayoutInflater.from(context)
         }
     }
 }
